@@ -2,58 +2,59 @@ package ru.ns7.ns7_face.emotions.GeneralEmotionScene;
 
 
 import android.content.Context;
+import android.opengl.GLSurfaceView;
 
+import fr.arnaudguyon.smartgl.opengl.RenderPassSprite;
+import fr.arnaudguyon.smartgl.opengl.SmartGLRenderer;
 import fr.arnaudguyon.smartgl.opengl.SmartGLView;
-import ru.ns7.ns7_face.emotions.Emotion;
+import ru.ns7.ns7_face.emotions.MouthTalk;
 
 
-public class GeneralEmotion extends Emotion {
+public class GeneralEmotion {
+
+    private SmartGLRenderer mRenderer;
+    private RenderPassSprite mRenderPassSprite;
 
     protected RightEye mRightEye;
     protected LeftEye mLeftEye;
     protected Mouth mMouth;
 
-    protected boolean isAnimateMouth = false;
+    protected MouthTalk mMouthTalk;
+
 
     public GeneralEmotion(SmartGLView mView) {
-        super(mView);
 
         Context context = mView.getContext();
+        mRenderPassSprite = new RenderPassSprite();
+        mRenderer = mView.getSmartGLRenderer();
 
         mRightEye = new RightEye(context);
         mLeftEye = new LeftEye(context);
-        mMouth = new Mouth(context);
+        mMouthTalk = new MouthTalk(context);
     }
 
 
     public void init() {
+
         mRightEye.setPos(400, 300);
         mRightEye.setScale(2f, 2f);
 
         mLeftEye.setPos(0, 300);
         mLeftEye.setScale(2f, 2f);
 
-        mMouth.setPos(370, 580);
-        mMouth.setScale(0.3f, 0.4f);
+        mMouthTalk.setPos(405, 660);
+        mMouthTalk.setScale(0.3f, 0.4f);
 
         mRenderPassSprite.addSprite(mRightEye);
         mRenderPassSprite.addSprite(mLeftEye);
-        mRenderPassSprite.addSprite(mMouth);
+        mRenderPassSprite.addSprite(mMouthTalk);
 
+        mRenderer.addRenderPass(mRenderPassSprite);
     }
 
 
-    public void MouthAnimate() {
-        if (isAnimateMouth) {
-            //mMouth.setVisible(false);
-            mMouth.setScale(mMouth.getScaleX(), mMouth.getScaleY() / 0.5f);
-        }
-        else {
-            //mMouth.setVisible(true);
-            mMouth.setScale(mMouth.getScaleX(), mMouth.getScaleY() * 0.5f);
-        }
-
-        isAnimateMouth =! isAnimateMouth;
+    public void update() {
+        mMouthTalk.Update(mRenderer.getFrameDuration());
     }
 
     public void release() {
@@ -66,8 +67,12 @@ public class GeneralEmotion extends Emotion {
         }
 
         if (mMouth != null) {
-            mMouth.release();
+            mMouthTalk.release();
         }
+    }
+
+    public void AnimateMouth(boolean animate) {
+        mMouthTalk.setAnimate(animate);
     }
 
 }
