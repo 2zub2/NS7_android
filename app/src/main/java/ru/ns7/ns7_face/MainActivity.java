@@ -26,6 +26,7 @@ public class MainActivity extends Activity {
 
         mActivityGLView = (SmartGLView) findViewById(R.id.faceView);
         mActivityGLView.setDefaultRenderer(this);
+        mActivityGLView.getSmartGLRenderer().setMflip2DProj(true);
         mActivityGLView.setController(new GLViewController());
     }
 
