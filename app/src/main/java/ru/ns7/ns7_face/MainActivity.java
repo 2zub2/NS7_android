@@ -6,10 +6,13 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import fr.arnaudguyon.smartgl.opengl.SmartGLView;
+import ru.ns7.ns7_face.sound.AudioListener;
 
 public class MainActivity extends Activity {
 
     private SmartGLView mActivityGLView;
+
+    private AudioListener audioListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +29,19 @@ public class MainActivity extends Activity {
 
         mActivityGLView = (SmartGLView) findViewById(R.id.faceView);
         mActivityGLView.setDefaultRenderer(this);
-        mActivityGLView.getSmartGLRenderer().setMflip2DProj(true);
-        mActivityGLView.setController(new GLViewController());
+        // mActivityGLView.getSmartGLRenderer().setMflip2DProj(true);
+
+        audioListener = new AudioListener();
+
+        mActivityGLView.setController(new GLViewController(audioListener));
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        audioListener.checkPermissionsAndStart(this);
     }
 
     @Override

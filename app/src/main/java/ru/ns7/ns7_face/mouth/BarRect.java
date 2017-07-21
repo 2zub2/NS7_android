@@ -1,24 +1,26 @@
-package ru.ns7.ns7_face.emotions.GeneralEmotionScene;
+package ru.ns7.ns7_face.mouth;
+
 
 import android.content.Context;
+
 import fr.arnaudguyon.smartgl.opengl.Sprite;
 import fr.arnaudguyon.smartgl.opengl.Texture;
 import ru.ns7.ns7_face.R;
 
+public class BarRect extends Sprite {
+    public static final int WIDTH = 5;
+    public static final int HEIGHT = 1;
 
-public class Mouth extends Sprite {
+    Texture spriteTexture;
 
-    private  Texture spriteTexture;
+    public BarRect(Context context) {
+        super(WIDTH, HEIGHT);
 
-    public Mouth(Context context) {
-        super(250, 111);
-
-        spriteTexture = new Texture(context, R.drawable.mouth);
+        spriteTexture = new Texture(context, R.drawable.bar_rect);
         setTexture(spriteTexture);
     }
 
     public void release() {
-
         if (spriteTexture != null) {
             spriteTexture.release();
         }

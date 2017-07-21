@@ -47,7 +47,7 @@ public class GeneralEmotion {
 
         mRenderPassSprite.addSprite(mRightEye);
         mRenderPassSprite.addSprite(mLeftEye);
-        mRenderPassSprite.addSprite(mMouthTalk);
+        //mRenderPassSprite.addSprite(mMouthTalk);
 
         mRenderer.addRenderPass(mRenderPassSprite);
     }
