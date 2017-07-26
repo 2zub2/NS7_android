@@ -10,9 +10,8 @@ import ru.ns7.ns7_face.sound.AudioListener;
 
 public class MainActivity extends Activity {
 
-    private SmartGLView mActivityGLView;
-
-    private AudioListener audioListener;
+    private SmartGLView glView;
+    private GLViewController glViewController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,36 +26,46 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        mActivityGLView = (SmartGLView) findViewById(R.id.faceView);
-        mActivityGLView.setDefaultRenderer(this);
-        // mActivityGLView.getSmartGLRenderer().setMflip2DProj(true);
+        glView = (SmartGLView) findViewById(R.id.faceView);
+        glView.setDefaultRenderer(this);
+        // glView.getSmartGLRenderer().setMflip2DProj(true);
 
-        audioListener = new AudioListener();
-
-        mActivityGLView.setController(new GLViewController(audioListener));
-
-
+        glViewController = new GLViewController();
+        glView.setController(glViewController);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        audioListener.checkPermissionsAndStart(this);
+
+        if (glViewController != null) {
+            glViewController.onStart(this);
+        }
     }
 
     @Override
     protected void onPause() {
-        if (mActivityGLView != null) {
-            mActivityGLView.onPause();
-        }
         super.onPause();
+
+        if (glView != null) {
+            glView.onPause();
+        }
+
+        if (glViewController != null) {
+            glViewController.onPause();
+        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (mActivityGLView != null) {
-            mActivityGLView.onResume();
+        if (glView != null) {
+            glView.onResume();
+        }
+
+        if (glViewController != null) {
+            glViewController.onResume();
         }
     }
 }

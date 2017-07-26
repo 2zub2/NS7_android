@@ -2,51 +2,50 @@ package ru.ns7.ns7_face.mouth;
 
 
 import android.content.Context;
-import android.media.AudioRecord;
 
 import fr.arnaudguyon.smartgl.opengl.RenderPassSprite;
 import fr.arnaudguyon.smartgl.opengl.SmartGLRenderer;
 import fr.arnaudguyon.smartgl.opengl.SmartGLView;
-import ru.ns7.ns7_face.sound.AudioListener;
+import ru.ns7.ns7_face.sound.AudioVisualisation;
 
-public class WaveBar {
+public class WaveBar extends AudioVisualisation {
+    private final int NUM_RECT = 44;
     private final int LEFT_POSITION = 300;
     private final int TOP_POSITION = 650;
+    private final int BUFFER_LENGHT = 2048;
+
 
     private SmartGLRenderer glRenderer;
     private RenderPassSprite renderPassSprite;
-    public AudioListener audioListener;
 
     private BarRect[] barRects;
 
     private Wave wave;
-    private int numRect;
     private float[] scaleRects;
 
+    private byte[] buffer;
 
-    public WaveBar(SmartGLView glView, AudioListener listener)
+
+    public WaveBar(SmartGLView glView)
     {
-        audioListener = listener;
-
         Context context = glView.getContext();
 
         glRenderer = glView.getSmartGLRenderer();
         renderPassSprite = new RenderPassSprite();
 
-        numRect = Wave.NUM_RECT;
+        barRects = new BarRect[NUM_RECT];
 
-        barRects = new BarRect[numRect];
-
-        for (int i = 0; i < numRect; i++) {
+        for (int i = 0; i < NUM_RECT; i++) {
             barRects[i] = new BarRect(context);
         }
 
-        scaleRects = new float[numRect];
+        scaleRects = new float[NUM_RECT];
+        buffer = new byte[BUFFER_LENGHT];
     }
 
     public void init()
     {
-        for (int i = 0; i < Wave.NUM_RECT; i++) {
+        for (int i = 0; i < NUM_RECT; i++) {
             barRects[i].setPivot(0.5f, 0.5f);
             barRects[i].setPos(LEFT_POSITION + BarRect.WIDTH*i, TOP_POSITION);
             renderPassSprite.addSprite(barRects[i]);
@@ -54,23 +53,19 @@ public class WaveBar {
 
         glRenderer.addRenderPass(renderPassSprite);
 
-        wave = new Wave();
+        wave = new Wave(NUM_RECT);
     }
 
-    public void UpdateRms()
-    {
-        //audioListener.update();
-
-        if (audioListener.buffer != null)
-            wave.UpdateRms(audioListener.buffer);
-    }
 
     public void update()
     {
-        UpdateRms();
-        wave.UpdateWave(scaleRects);
+        if (audioVisualizationStream.getSample(buffer)) {
+            wave.updateRms(buffer);
+        }
 
-        for (int i = 0; i < numRect; i++) {
+        wave.updateWave(scaleRects);
+
+        for (int i = 0; i < NUM_RECT; i++) {
             barRects[i].setScale(1, scaleRects[i]);
         }
     }
@@ -78,7 +73,7 @@ public class WaveBar {
     public void release()
     {
         if (barRects != null) {
-            for (int i = 0; i < numRect; i++) {
+            for (int i = 0; i < NUM_RECT; i++) {
                 barRects[i].release();
                 renderPassSprite.releaseResources();
             }

@@ -1,5 +1,7 @@
 package ru.ns7.ns7_face;
 
+import android.app.Activity;
+
 import fr.arnaudguyon.smartgl.opengl.SmartGLRenderer;
 import fr.arnaudguyon.smartgl.opengl.SmartGLView;
 import fr.arnaudguyon.smartgl.opengl.SmartGLViewController;
@@ -14,12 +16,8 @@ public class GLViewController implements SmartGLViewController {
 
     private boolean tmpAnimateMouth = false;
 
-    public AudioListener audioListener;
+    private AudioListener audioListener;
 
-
-    public GLViewController(AudioListener listener) {
-        audioListener = listener;
-    }
 
     @Override
     public void onPrepareView(SmartGLView smartGLView) {
@@ -30,7 +28,8 @@ public class GLViewController implements SmartGLViewController {
         generalEmotion = new GeneralEmotion(smartGLView);
         generalEmotion.init();
 
-        waveBar = new WaveBar(smartGLView, audioListener);
+        waveBar = new WaveBar(smartGLView);
+        waveBar.linkToAudioByteStream(audioListener);
         waveBar.init();
     }
 
@@ -56,5 +55,21 @@ public class GLViewController implements SmartGLViewController {
         generalEmotion.AnimateMouth(tmpAnimateMouth);
 
         tmpAnimateMouth = !tmpAnimateMouth;
+    }
+
+    public void onStart(Activity activity)
+    {
+        audioListener = new AudioListener();
+        audioListener.checkPermissionsAndStart(activity);
+    }
+
+    public void onPause()
+    {
+        return;
+    }
+
+    public void onResume()
+    {
+        return;
     }
 }
