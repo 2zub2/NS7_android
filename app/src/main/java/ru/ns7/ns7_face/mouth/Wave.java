@@ -6,7 +6,7 @@ public class Wave {
     private final float COS_OFFSET = 0.2f;
     private final float INTERPOLATION = 0.2f;
 
-    private final boolean useAvaregeRms = false;
+    private final boolean useAvaregeRms = true;
     private float prevRmsValue;
 
     private float[] waveValues;
@@ -37,7 +37,7 @@ public class Wave {
             sum += sample * sample;
         }
 
-        rmsValue = (float)Math.sqrt(sum / (buffer.length / 8));
+        rmsValue = (float)Math.sqrt(sum / (buffer.length / 2));
     }
 
     public void updateWave(float[] scales)
